@@ -1,0 +1,10 @@
+[package]
+name = "remote"
+version = "0.1.0"
+authors = ["oho <ondrej@holecek.eu>"]
+edition = "2018"
+
+[dependencies]
+ws = "0.9.0"
+hyper = "0.12"
+config = "0.9.3"

@@ -1,0 +1,8 @@
+[global]
+main = "index.html"
+ws_listen = "127.0.0.1:8001"
+http_listen = "0.0.0.0:8000"
+
+[proxy]
+forward  = "msg_forward.js"
+backward = "msg_backward.js"

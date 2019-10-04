@@ -1,0 +1,76 @@
+<html>
+<head>
+
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato" />
+
+
+<style>
+	* {
+		font-family: Lato,Helvetica,Arial,sans-serif;
+	}
+
+	body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
+
+	.container {
+		display: grid;
+		grid-template-columns: 50% 50%;
+		grid-template-rows: 100vh;
+		grid-template-areas:
+			"backward forward";
+	}
+	
+	.backward {
+		background: red;
+	}
+	
+	.forward {
+		background: green;
+	}
+
+	.button {
+		text-align: center;
+		vertical-align: middle;
+		font-size: 50px;
+		line-height: 100vh;
+	}
+
+	.button a {
+		text-decoration: none;
+		color: white;
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+
+	.button a:active {
+		color: yellow;
+	}
+
+</style>
+
+<script>
+	function clicked(action) {
+		console.debug("Clicked action: " + action);
+		
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("GET", "/" + action, true);
+		xhttp.send();
+	}
+</script>
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="backward button"><a href="javascript:clicked('backward')">&#8592;</a></div>
+		<div class="forward button"><a href="javascript:clicked('forward')">&#8594;</a></div>
+	</div>
+</body>
+
+</html>
