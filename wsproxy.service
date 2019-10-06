@@ -10,4 +10,5 @@ KillMode=process
 Restart=on-failure
 
 [Install]
-Alias=wsproxy.service
+WantedBy=multi-user.target
+
