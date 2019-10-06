@@ -1,1 +1,2 @@
-$("i.fa.fa-step-backward").click()
+var e = document.getElementsByClassName('fa-step-backward')[0];
+e.click();
