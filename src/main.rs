@@ -9,6 +9,8 @@ use ws::util::Token;
 use std::thread;
 use std::sync::{Arc, Mutex};
 
+use serde_json::json;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use hyper::{Body, Response, Server};
 use hyper::rt::Future;
@@ -26,6 +28,7 @@ struct WSServer {
 	out: Sender,
 	shared_message: Arc<Mutex<SharedMessage>>,
 	shared_message_last_serial: u32,
+	random: u64,
 }
 
 impl WSServer {
@@ -38,6 +41,7 @@ impl WSServer {
 			out: out,
 			shared_message: shared_message,
 			shared_message_last_serial: current_serial,
+			random : SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as u64,
 		}
 	}
 }
@@ -46,20 +50,38 @@ impl Handler for WSServer {
 	fn on_open(&mut self, _: Handshake) -> Result<()> {
 		self.out.timeout(1000, PONG).unwrap();
 		self.out.timeout(100,  DATA).unwrap();
-		self.out.send("VERSION 0.1").unwrap();
+		let o = json!({
+			"event": "welcome",
+			"random": self.random,
+			"version": {
+				"main": 1u32,
+				"patch": 1u32,
+			},
+		});
+		self.out.send(o.to_string()).unwrap();
+
 		Ok(())
 	}
 
 	fn on_timeout(&mut self, event: Token) -> Result<()> {
 		if event == PONG {
-			self.out.send("PONG").unwrap();
+			let o = json!({
+				"event": "pong",
+				"random": self.random,
+			});
+			self.out.send(o.to_string()).unwrap();
 			self.out.timeout(1000, PONG).unwrap();
 			Ok(())
 
 		} else if event == DATA {
 			let msg = self.shared_message.lock().unwrap();
 			if msg.serial != self.shared_message_last_serial {
-				self.out.send(msg.msg.clone()).unwrap();
+				let o = json!({
+					"event": "data",
+					"random": self.random,
+					"data": msg.msg.clone(),
+				});
+				self.out.send(o.to_string()).unwrap();
 				self.shared_message_last_serial = msg.serial;
 			}
 			self.out.timeout(200, DATA).unwrap();
