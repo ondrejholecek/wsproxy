@@ -1,0 +1,13 @@
+[Unit]
+Description=WSProxy to control TV from mobile
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/wsproxy/target/debug/wsproxy
+WorkingDirectory=/opt/wsproxy
+KillMode=process
+Restart=on-failure
+
+[Install]
+Alias=wsproxy.service
